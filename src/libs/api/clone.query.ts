@@ -15,6 +15,7 @@ export const useClonesQuery = () => {
     queryKey: ["clones"],
     queryFn: () => cloneService.getClones(),
     refetchOnWindowFocus: false,
+    staleTime: 0,
   });
 };
 

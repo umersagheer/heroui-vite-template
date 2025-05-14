@@ -6,11 +6,12 @@ import {
   Input,
   Select,
   SelectItem,
+  Spinner,
   Textarea,
 } from "@heroui/react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { MagicWand, Plus, X } from "@phosphor-icons/react";
+import { HeadCircuit, MagicWand, Plus, X } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
 import Avatar from "boring-avatars";
 import { useNavigate } from "react-router-dom";
@@ -23,6 +24,7 @@ export default function CreateClonePage() {
   const [newYouTubeURL, setNewYouTubeURL] = useState("");
   const navigate = useNavigate();
   const { user } = useAuthStore((state) => state);
+  const [isProcessing, setIsProcessing] = useState(false);
   const {
     control,
     formState: { errors },
@@ -56,16 +58,21 @@ export default function CreateClonePage() {
     createClone(values, {
       onSuccess: async (data) => {
         addToast({
-          title: "Clone created",
-          color: "success",
+          title: "Processing clone...",
           description:
-            "Your clone was created successfully. Starting processing...",
+            "We're preparing your clone. This might take a few moments.",
+          color: "default",
+          endContent: <Spinner variant="dots" />,
+          timeout: 10000,
+          icon: <HeadCircuit size={20} />,
         });
 
         try {
           // Start processing
+          setIsProcessing(true);
           await cloneService.processClone(data.id);
 
+          setIsProcessing(false);
           addToast({
             title: "Processing complete",
             description: "Your clone is now ready to use.",
@@ -74,6 +81,7 @@ export default function CreateClonePage() {
 
           navigate(`/u/${user?.id}/clones`);
         } catch (e: any) {
+          setIsProcessing(false);
           addToast({
             title: "❌ Processing failed",
             description: e.message || "Something went wrong during processing.",
@@ -128,7 +136,9 @@ export default function CreateClonePage() {
           colors={["#7828c8", "#006FEE", "#f31260", "#f5a524"]}
         />
       </div>
-      <Card className=" w-full">
+      <Card
+        className={`w-full ${isProcessing ? "opacity-50 pointer-events-none" : ""}`}
+      >
         <CardBody>
           <form
             onSubmit={handleSubmit(onSubmit)}

@@ -79,6 +79,7 @@ export function CloneCard({ clone }: CloneCardProps) {
                   title: "Coming soon!",
                   description: "This feature is not available yet.",
                   color: "default",
+                  icon: <PhoneCall size={16} />,
                 });
               }}
             >

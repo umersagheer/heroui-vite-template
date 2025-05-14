@@ -8,7 +8,10 @@ export const CreateCloneSchema = z
     description: z.string().min(1, "Description is required").max(500),
     sourceType: z.enum(["MIXED", "YOUTUBE", "DOCUMENTS", "TEXT"]),
     youtubeURLs: z.array(z.string().regex(youtubeRegex, "Invalid YouTube URL")),
-    customText: z.string().optional(),
+    customText: z
+      .string()
+      .max(2200, { message: "Words shouldnt be less then 500" })
+      .optional(),
     documents: z.array(z.string()).optional(),
     voiceId: z.string().optional(),
   })

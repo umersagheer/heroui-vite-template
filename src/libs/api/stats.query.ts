@@ -7,5 +7,6 @@ export const useStatsQuery = () => {
     queryKey: ["stats"],
     queryFn: () => statsService.getStats(),
     refetchOnWindowFocus: false,
+    staleTime: 0,
   });
 };
